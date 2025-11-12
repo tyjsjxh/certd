@@ -91,6 +91,7 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
           type: "number",
           column: {
             width: 50,
+            order: -999,
           },
           form: {
             show: false,
@@ -105,9 +106,11 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
           form: {
             rules: [{ required: true, message: t("certd.pleaseEnterName") }],
             helper: t("certd.nameHelper"),
+            order: -2,
           },
           column: {
             width: 200,
+            order: -2,
           },
         },
         from: {

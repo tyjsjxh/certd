@@ -66,6 +66,7 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
           type: "number",
           column: {
             width: 100,
+            order: -999,
           },
           form: {
             show: false,
@@ -79,9 +80,11 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
           },
           form: {
             rules: [{ required: true, message: "必填项" }],
+            order: -11,
           },
           column: {
             width: 300,
+            order: -11,
           },
         },
         from: {

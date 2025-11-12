@@ -95,10 +95,10 @@ export default defineConfig({
                         },
                         {
                             text: "插件列表", items: [
-                                {text: "授权提供商", link: "/guide/plugins/access.md"},
                                 {text: "DNS提供商", link: "/guide/plugins/dns-provider.md"},
                                 {text: "任务插件", link: "/guide/plugins/deploy.md"},
                                 {text: "通知插件", link: "/guide/plugins/notification.md"},
+                                {text: "授权提供商", link: "/guide/plugins/access.md"},
                             ]
                         },
                     ]
@@ -107,7 +107,6 @@ export default defineConfig({
                     text: "常见问题",
                     items: [
                         {text: "QA", link: "/guide/qa/use.md"},
-                        {text: "常见报错处理", link: "/guide/qa/"},
                         {text: "群晖证书部署", link: "/guide/use/synology/"},
                         {text: "腾讯云密钥获取", link: "/guide/use/tencent/"},
                         {text: "连接windows主机", link: "/guide/use/host/windows.md"},
@@ -120,6 +119,8 @@ export default defineConfig({
                         {text: "邮箱配置", link: "/guide/use/email/index.md"},
                         {text: "IPv6支持", link: "/guide/use/setting/ipv6.md"},
                         {text: "ESXi", link: "/guide/use/ESXi/index.md"},
+                        {text: "宝塔动态IP白名单", link: "/guide/use/baota/white_list.md"},
+                        {text: "子域名托管", link: "/guide/use/cert/subdomain.md"},
                     ]
                 },
                 {

@@ -3,6 +3,101 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.37.6](https://github.com/certd/certd/compare/v1.37.5...v1.37.6) (2025-11-10)
+
+### Performance Improvements
+
+* 支持letencrypt测试环境，支持IP证书？ ([1462cdd](https://github.com/certd/certd/commit/1462cddd1eb347b7ff238286b5c977b29a0591ec))
+
+## [1.37.5](https://github.com/certd/certd/compare/v1.37.4...v1.37.5) (2025-11-08)
+
+**Note:** Version bump only for package @certd/plugin-cert
+
+## [1.37.4](https://github.com/certd/certd/compare/v1.37.3...v1.37.4) (2025-10-28)
+
+### Bug Fixes
+
+* 修复lego模式下 私钥加密类型错误的bug ([f7cf7c1](https://github.com/certd/certd/commit/f7cf7c198d7f77b222099770f81accc637bc6619))
+
+## [1.37.3](https://github.com/certd/certd/compare/v1.37.2...v1.37.3) (2025-10-24)
+
+### Bug Fixes
+
+* 修复并发情况下证书申请日志混乱的bug ([bb2714f](https://github.com/certd/certd/commit/bb2714ff241f9db4a71d805b23a1b0f9f2f6413a))
+
+## [1.37.2](https://github.com/certd/certd/compare/v1.37.1...v1.37.2) (2025-10-14)
+
+### Performance Improvements
+
+* 证书监控支持设置证书即将过期天数 ([cd35568](https://github.com/certd/certd/commit/cd35568e042e6ab928685efad51cdbed823d2d4f))
+* 支持新网代理方式 ([f612509](https://github.com/certd/certd/commit/f612509cac87b859e81a7a52fe94b2eaccad22f9))
+
+## [1.37.1](https://github.com/certd/certd/compare/v1.37.0...v1.37.1) (2025-09-29)
+
+### Performance Improvements
+
+* cname主域名校验提示优化，显示不一致的两方便于排查问题 ([6ebb365](https://github.com/certd/certd/commit/6ebb3659f42155e4e8da600c493fb5227cd08137))
+
+# [1.37.0](https://github.com/certd/certd/compare/v1.36.25...v1.37.0) (2025-09-28)
+
+**Note:** Version bump only for package @certd/plugin-cert
+
+## [1.36.25](https://github.com/certd/certd/compare/v1.36.24...v1.36.25) (2025-09-27)
+
+**Note:** Version bump only for package @certd/plugin-cert
+
+## [1.36.24](https://github.com/certd/certd/compare/v1.36.23...v1.36.24) (2025-09-27)
+
+**Note:** Version bump only for package @certd/plugin-cert
+
+## [1.36.23](https://github.com/certd/certd/compare/v1.36.22...v1.36.23) (2025-09-26)
+
+### Performance Improvements
+
+* 手动上传证书优化，增加到期前报错提醒 ([3d42bfd](https://github.com/certd/certd/commit/3d42bfd479eaacc4a49c401224815a6e2a0204b0))
+* 支持腾讯云验证码 ([03f317f](https://github.com/certd/certd/commit/03f317ffdb6595ce70e8a2302b05f390c52110c8))
+
+## [1.36.22](https://github.com/certd/certd/compare/v1.36.21...v1.36.22) (2025-09-23)
+
+### Bug Fixes
+
+* 修复旧版本升级上来报错eab授权的bug ([b76f2e2](https://github.com/certd/certd/commit/b76f2e2008a7fefac4c91179c45c56c7a7a84b71))
+
+### Performance Improvements
+
+* add preferred chain for google trust service ([#539](https://github.com/certd/certd/issues/539)) @ZeroClover ([e31d26a](https://github.com/certd/certd/commit/e31d26a8871c6088d9f8c0f580746ff2a810ae0c))
+
+## [1.36.21](https://github.com/certd/certd/compare/v1.36.20...v1.36.21) (2025-09-15)
+
+### Bug Fixes
+
+* 修复ssl.com报EMAILADDRESS数量不对的bug ([c560cc5](https://github.com/certd/certd/commit/c560cc5adda6e15bf3a8865d874042550a6c2688))
+
+## [1.36.20](https://github.com/certd/certd/compare/v1.36.19...v1.36.20) (2025-09-13)
+
+### Bug Fixes
+
+* 修复证书手动托管时新上传的证书无效的bug ([506385e](https://github.com/certd/certd/commit/506385e5a2600887fe30854e0713583caaa2e689))
+
+### Performance Improvements
+
+* 证书到期剩余天数进度条根据实际证书有效期计算 ([#528](https://github.com/certd/certd/issues/528)) nicheng-he ([2d4586b](https://github.com/certd/certd/commit/2d4586b1c42c39f97d2a95b9453cca4bc8bfbe61))
+* add preferred chain option ([#519](https://github.com/certd/certd/issues/519))  @ZeroClover  ([902359f](https://github.com/certd/certd/commit/902359f24ed12eee4f9b65178f1d6a60378351d2))
+
+## [1.36.19](https://github.com/certd/certd/compare/v1.36.18...v1.36.19) (2025-09-05)
+
+### Performance Improvements
+
+* 支持ssl.com证书颁发机构 ([27b6dfa](https://github.com/certd/certd/commit/27b6dfa4d2ab3bddd284c3a34511a72e1a513a4c))
+* 子域名托管说明 ([39a0223](https://github.com/certd/certd/commit/39a02235cf4416bb5bd1acd3831241efeaa2f602))
+
+## [1.36.18](https://github.com/certd/certd/compare/v1.36.17...v1.36.18) (2025-08-28)
+
+### Performance Improvements
+
+* 支持p7b证书格式 ([d9f4a57](https://github.com/certd/certd/commit/d9f4a5793d68a017a5d80ad5385cbda603c4e165))
+* openapi返回证书时挑选匹配范围最小的那一个；增加format参数，增加返回值p7b格式，增加detail返回 ([2085bcc](https://github.com/certd/certd/commit/2085bcceb61c3723c9bdfec4c4cc0917631ff5e5))
+
 ## [1.36.17](https://github.com/certd/certd/compare/v1.36.16...v1.36.17) (2025-08-17)
 
 ### Performance Improvements

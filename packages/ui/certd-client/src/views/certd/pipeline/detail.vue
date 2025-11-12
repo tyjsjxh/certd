@@ -37,6 +37,7 @@ const pipelineOptions: PipelineOptions = {
         type: detail.pipeline.type,
         from: detail.pipeline.from,
       },
+      validTime: detail.pipeline.validTime,
     } as PipelineDetail;
   },
 
@@ -55,7 +56,7 @@ const pipelineOptions: PipelineOptions = {
   },
 
   async doSave(pipelineConfig: any) {
-    await api.Save({
+    return await api.Save({
       id: pipelineConfig.id,
       content: JSON.stringify(pipelineConfig),
     });

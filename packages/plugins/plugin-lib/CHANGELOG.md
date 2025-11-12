@@ -3,6 +3,78 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.37.6](https://github.com/certd/certd/compare/v1.37.5...v1.37.6) (2025-11-10)
+
+**Note:** Version bump only for package @certd/plugin-lib
+
+## [1.37.5](https://github.com/certd/certd/compare/v1.37.4...v1.37.5) (2025-11-08)
+
+**Note:** Version bump only for package @certd/plugin-lib
+
+## [1.37.4](https://github.com/certd/certd/compare/v1.37.3...v1.37.4) (2025-10-28)
+
+**Note:** Version bump only for package @certd/plugin-lib
+
+## [1.37.3](https://github.com/certd/certd/compare/v1.37.2...v1.37.3) (2025-10-24)
+
+### Performance Improvements
+
+* ssh 增加禁止-i参数提示 ([3a8931f](https://github.com/certd/certd/commit/3a8931feeffd7157163ff7d46b693e5e1a434b9c))
+
+## [1.37.2](https://github.com/certd/certd/compare/v1.37.1...v1.37.2) (2025-10-14)
+
+**Note:** Version bump only for package @certd/plugin-lib
+
+## [1.37.1](https://github.com/certd/certd/compare/v1.37.0...v1.37.1) (2025-09-29)
+
+### Performance Improvements
+
+* dns解析支持阿里esa ([9291fa6](https://github.com/certd/certd/commit/9291fa68aa7a88a05c2f888bf3048df36a8fbde3))
+
+# [1.37.0](https://github.com/certd/certd/compare/v1.36.25...v1.37.0) (2025-09-28)
+
+**Note:** Version bump only for package @certd/plugin-lib
+
+## [1.36.25](https://github.com/certd/certd/compare/v1.36.24...v1.36.25) (2025-09-27)
+
+**Note:** Version bump only for package @certd/plugin-lib
+
+## [1.36.24](https://github.com/certd/certd/compare/v1.36.23...v1.36.24) (2025-09-27)
+
+**Note:** Version bump only for package @certd/plugin-lib
+
+## [1.36.23](https://github.com/certd/certd/compare/v1.36.22...v1.36.23) (2025-09-26)
+
+**Note:** Version bump only for package @certd/plugin-lib
+
+## [1.36.22](https://github.com/certd/certd/compare/v1.36.21...v1.36.22) (2025-09-23)
+
+**Note:** Version bump only for package @certd/plugin-lib
+
+## [1.36.21](https://github.com/certd/certd/compare/v1.36.20...v1.36.21) (2025-09-15)
+
+**Note:** Version bump only for package @certd/plugin-lib
+
+## [1.36.20](https://github.com/certd/certd/compare/v1.36.19...v1.36.20) (2025-09-13)
+
+### Performance Improvements
+
+* ssh配置增加脚本类型设置，bash还是sh ([ae41c60](https://github.com/certd/certd/commit/ae41c6038b27c9476e64a2402a8daf247c38a5b6))
+
+## [1.36.19](https://github.com/certd/certd/compare/v1.36.18...v1.36.19) (2025-09-05)
+
+### Performance Improvements
+
+* ssh 增加超时断开连接，默认10分钟超时 ([c24a040](https://github.com/certd/certd/commit/c24a040c19cacafc79228d7a7649af93837d94a1))
+
+## [1.36.18](https://github.com/certd/certd/compare/v1.36.17...v1.36.18) (2025-08-28)
+
+### Performance Improvements
+
+* 腾讯云插件支持国际版 ([58e82d5](https://github.com/certd/certd/commit/58e82d5dbd4ebf089ef239578ef9b68454d17b30))
+* 支持部署到阿里云云原生API网关、AI网关 ([2ca20be](https://github.com/certd/certd/commit/2ca20be197720201fceabcce9d927f4dbc1cc872))
+* ssh 配置sudo免密提示 ([e1e7011](https://github.com/certd/certd/commit/e1e7011853ad0c5bd7b09c3690861d5aa34b2db4))
+
 ## [1.36.17](https://github.com/certd/certd/compare/v1.36.16...v1.36.17) (2025-08-17)
 
 ### Performance Improvements

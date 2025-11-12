@@ -21,6 +21,7 @@ export default {
     pipeline: "Pipeline",
     domain: "Domain",
     deployTimes: "Deployments",
+    monitorCount: "DomainMonitors",
     duration: "Duration",
     price: "Price",
     paymentMethod: "Payment Method",
@@ -56,6 +57,7 @@ export default {
   suiteBuy: "Suite Purchase",
   myTrade: "My Orders",
   paymentReturn: "Payment Return",
+  hasExpired: "Expired",
   user: {
     greeting: "Hello",
     profile: "Account Info",
@@ -118,6 +120,7 @@ export default {
     scheduledTaskCount: "Scheduled Task Count",
     deployTaskCount: "Deployment Task Count",
     remainingValidity: "Remaining Validity",
+    effectiveTime: "Effective time",
     expiryTime: "Expiry Time",
     status: "Status",
     lastRun: "Last Run",
@@ -134,10 +137,16 @@ export default {
     triggerType: "Trigger Type",
     pipelineId: "Pipeline Id",
   },
+
+  pi: {
+    validTime: "Piepline Valid Time",
+    validTimeHelper: "Not filled in means permanent validity",
+  },
   types: {
-    certApply: "Certificate Application",
-    certUpload: "Certificate Upload",
+    certApply: "Cert Apply",
+    certUpload: "Cert Upload",
     custom: "Custom",
+    template: "Template",
   },
   myPipelines: "My Pipelines",
   selectedCount: "Selected {count} items",
@@ -173,6 +182,7 @@ export default {
     suiteSetting: "Suite Settings",
     orderManager: "Order Management",
     userSuites: "User Suites",
+    netTest: "Network Test",
   },
   certificateRepo: {
     title: "Certificate Repository",
@@ -218,11 +228,16 @@ export default {
     triggerCronHelper:
       "Click the button above to choose a daily execution time.\nIt is recommended to trigger once per day. The task will be skipped if the certificate has not expired and will not be executed repeatedly.",
     notificationTitle: "Failure Notification",
+    notificationWhen: "Notification Timing",
     notificationHelper: "Get real-time alerts when the task fails",
     groupIdTitle: "Pipeline Group",
+
+    addToMonitorEnabled: "Add to Cert Monitor",
+    addToMonitorDomains: "Add to Monitor Domains",
   },
   notificationDefault: "Use Default Notification",
   monitor: {
+    remark: "Remark",
     title: "Site Certificate Monitoring",
     description: "Check website certificates' expiration at 0:00 daily; reminders sent 10 days before expiration (using default notification channel);",
     settingLink: "Site Monitoring Settings",
@@ -244,11 +259,14 @@ export default {
     certDomains: "Certificate Domains",
     certProvider: "Issuer",
     certStatus: "Certificate Status",
+    error: "Error",
     status: {
       ok: "Valid",
       expired: "Expired",
     },
+    certEffectiveTime: "Certificate Effective",
     certExpiresTime: "Certificate Expiration",
+    remainingValidity: "Remaining Validity",
     expired: "expired",
     days: "days",
     lastCheckTime: "Last Check Time",
@@ -275,6 +293,8 @@ export default {
       cronTrigger: "Scheduled trigger for monitoring",
       dnsServer: "DNS Server",
       dnsServerHelper: "Use a custom domain name resolution server, such as: 1.1.1.1 , support multiple",
+      certValidDays: "Certificate Valid Days",
+      certValidDaysHelper: "Number of days before expiration to send a notification",
     },
   },
   checkStatus: {
@@ -284,7 +304,7 @@ export default {
   },
   domainList: {
     title: "Domain List",
-    helper: "Format: domain:port:name, one per line. Port and name are optional.\nExamples:\nwww.baidu.com:443:Baidu\nwww.taobao.com::Taobao\nwww.google.com",
+    helper: "Format: domain:port:name:remark, one per line. Port and name are optional.\nExamples:\nwww.baidu.com:443:Baidu:remarkText\nwww.taobao.com::Taobao\nwww.google.com",
     required: "Please enter domains to import",
     placeholder: "www.baidu.com:443:Baidu\nwww.taobao.com::Taobao\nwww.google.com\n",
   },
@@ -442,6 +462,7 @@ export default {
   description: "Description",
   createTime: "Creation Time",
   updateTime: "Update Time",
+  mainDomain: "Main Domain",
   edit: "Edit",
   groupName: "Group Name",
   enterGroupName: "Please enter group name",
@@ -463,6 +484,7 @@ export default {
   validDays: "Valid Days",
   expires: " expires",
   days: " days",
+  effectiveTime: "Effective Time",
   expireTime: "Expiration Time",
   certIssuer: "Certificate Issuer",
   applyTime: "Application Time",
@@ -564,7 +586,7 @@ export default {
   ipv6Priority: "IPv6 Priority",
   dualStackNetworkHelper: "If IPv6 priority is selected, enable IPv6 in docker-compose.yaml",
   enableCommonCnameService: "Enable Public CNAME Service",
-  commonCnameHelper: "Allow use of public CNAME service. If disabled and no <router-link to='/sys/cname/provider'>custom CNAME service</router-link> is set, CNAME proxy certificate application will not work.",
+  commonCnameHelper: "Allow use of public CNAME service. If disabled and no <a href='#/sys/cname/provider'>custom CNAME service</a> is set, CNAME proxy certificate application will not work.",
   enableCommonSelfServicePasswordRetrieval: "Enable self-service password recovery",
   saveButton: "Save",
   stopSuccess: "Stopped successfully",
@@ -587,6 +609,7 @@ export default {
   commFeature: "Commercial feature",
   smsProvider: "SMS provider",
   aliyunSms: "Aliyun SMS",
+  tencentSms: "Tencent SMS",
   yfySms: "YFY SMS",
   smsTest: "SMS test",
   testMobilePlaceholder: "Enter test mobile number",
@@ -704,10 +727,39 @@ export default {
     pipeline: "Pipeline",
   },
 
+  addonType: "Type",
+  addonName: "Name",
+  addonNameHelper: "Fill freely, helps to distinguish when multiple same type exist",
+  addonTypeSelect: "Select type",
+  dates: {
+    years: "{count} years",
+    months: "{count} months",
+  },
   sys: {
     setting: {
+      baseSetting: "Base Settings",
+      registerSetting: "Register Settings",
+      safeSetting: "Safe Settings",
+      paymentSetting: "Payment Settings",
+      captchaSetting: "Captcha Setting",
+      pipelineSetting: "Pipeline Settings",
       showRunStrategy: "Show RunStrategy",
       showRunStrategyHelper: "Allow modify the run strategy of the task",
+
+      captchaEnabled: "Enable Login Captcha",
+      captchaHelper: "Whether to enable captcha verification for login",
+      captchaType: "Captcha Setting",
+      captchaTest: "Captcha Test",
+      // 保存后再点击测试，请务必测试通过了，再开启登录验证码
+      captchaTestHelper: "Save and click test, please make sure the test is passed before enabling login captcha",
+
+      pipelineValidTimeEnabled: "Enable Pipeline Valid Time",
+      pipelineValidTimeEnabledHelper: "Whether to enable the valid time of the pipeline",
+      certDomainAddToMonitorEnabled: "Add Domain to Certificate Monitor",
+      certDomainAddToMonitorEnabledHelper: "Whether to add the domain to the certificate monitor",
+      fixedCertExpireDays: "Fixed Cert Expire Days",
+      fixedCertExpireDaysHelper: "Fixed cert expiration days, helpful for table list progress bar display",
+      fixedCertExpireDaysRecommend: "Recommend 90",
     },
   },
   modal: {
@@ -727,5 +779,9 @@ export default {
     disabled: "Disabled",
     challengeSetting: "Challenge Setting",
     gotoCnameTip: "Please go to CNAME Record Page",
+  },
+  addonSelector: {
+    select: "Select",
+    placeholder: "select please",
   },
 };

@@ -29,9 +29,10 @@ const settingStore = useSettingStore();
 
 const iframeSrcRef = computed(() => {
   if (!settingStore.installInfo.accountServerBaseUrl) {
-    return "";
+    return "#/app/certd/home";
   }
-  return `${settingStore.installInfo.accountServerBaseUrl}/#/?appKey=${settingStore.installInfo.appKey}`;
+  const timestamp = Date.now();
+  return `${settingStore.installInfo.accountServerBaseUrl}/#/app/certd/home?t=${timestamp}`;
 });
 
 type SubjectInfo = {

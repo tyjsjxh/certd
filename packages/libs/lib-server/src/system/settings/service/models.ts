@@ -30,6 +30,25 @@ export class SysPublicSettings extends BaseSettings {
   mpsNo?: string;
   robots?: boolean = true;
   aiChatEnabled = true;
+
+
+  //验证码是否开启
+  captchaEnabled = false;
+  //验证码类型
+  captchaType?: string;
+  captchaAddonId?:number;
+
+
+
+  //流水线是否启用有效期
+  pipelineValidTimeEnabled?: boolean = false;
+
+  //证书域名添加到监控
+  certDomainAddToMonitorEnabled?: boolean = false;
+
+  // 固定证书有效期天数，0表示不固定
+  fixedCertExpireDays?: number;
+
 }
 
 export class SysPrivateSettings extends BaseSettings {
@@ -43,6 +62,8 @@ export class SysPrivateSettings extends BaseSettings {
   httpProxy? = '';
   dnsResultOrder? = '';
   commonCnameEnabled?: boolean = true;
+
+  httpRequestTimeout?: number = 30;
 
   sms?: {
     type?: string;

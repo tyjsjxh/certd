@@ -133,7 +133,7 @@ export const sysResources = [
         title: "certd.sysResources.sysPluginConfig",
         name: "SysPluginConfig",
         path: "/sys/plugin/config",
-        component: "/sys/plugin/config.vue",
+        component: "/sys/plugin/config-common.vue",
         meta: {
           show: () => {
             const settingStore = useSettingStore();
@@ -248,6 +248,17 @@ export const sysResources = [
             },
           },
         ],
+      },
+      {
+        title: "certd.sysResources.netTest",
+        name: "NetTest",
+        path: "/sys/nettest",
+        component: "/sys/nettest/index.vue",
+        meta: {
+          icon: "ion:build-outline",
+          auth: true,
+          keepAlive: true,
+        },
       },
     ],
   },

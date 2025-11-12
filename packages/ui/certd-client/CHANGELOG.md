@@ -3,6 +3,142 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.37.6](https://github.com/certd/certd/compare/v1.37.5...v1.37.6) (2025-11-10)
+
+### Bug Fixes
+
+* 修复创建流水线报id不能为空的bug ([aac569a](https://github.com/certd/certd/commit/aac569a9259ede43399e0ed5d668e936b984d6dd))
+
+### Performance Improvements
+
+* 增加vip时间同步按钮 ([32e4e91](https://github.com/certd/certd/commit/32e4e91ab81008dda422fb53fd6f4d1711c5d80c))
+
+## [1.37.5](https://github.com/certd/certd/compare/v1.37.4...v1.37.5) (2025-11-08)
+
+### Bug Fixes
+
+* 修复某些情况下编辑流水线，没有立即展示变更效果的bug ([65e5309](https://github.com/certd/certd/commit/65e53092e8d677eb34b7d04d68c6f738165f5de2))
+* 修复批量修改定时没有立即显示生效的bug ([c166602](https://github.com/certd/certd/commit/c16660254b8d637bd3ca100695934b343875fcbf))
+* 修复在苹果手机下输入框被放大的问题 ([5ff7e6e](https://github.com/certd/certd/commit/5ff7e6ef0eaa6bc111d0dd3c5713e1658f9113ad))
+
+### Performance Improvements
+
+*  支持记忆字段排序 ([d46b9c5](https://github.com/certd/certd/commit/d46b9c54b14ec5c892f4eed141fb549485941edd))
+* 优化任务参数配置界面在手机版下的展示效果 ([0203aa2](https://github.com/certd/certd/commit/0203aa2b6e86e58e5e66a1b9d0278d186aa92554))
+* 支持列表展示时固定证书最大天数，有助于列表进度条整齐展示 ([4a94eab](https://github.com/certd/certd/commit/4a94eab3935c89a63892661d9cf0d0891e54aa81))
+* 子域名托管说明 ([b5d8161](https://github.com/certd/certd/commit/b5d8161bc2e686e6c8b552de0c29117a5d405313))
+
+## [1.37.4](https://github.com/certd/certd/compare/v1.37.3...v1.37.4) (2025-10-28)
+
+### Bug Fixes
+
+* 修复站点证书监控复制按钮无效的bug ([efa26a0](https://github.com/certd/certd/commit/efa26a067f06402f30befc016d9934cadcd5a563))
+
+## [1.37.3](https://github.com/certd/certd/compare/v1.37.2...v1.37.3) (2025-10-24)
+
+### Performance Improvements
+
+*  注册页面增加手机注册tab页签 ([6b2f1fc](https://github.com/certd/certd/commit/6b2f1fcd3e058061b814c3331cda8ce1b2d80d73))
+* 流水线创建时支持添加到证书监控 ([59ba408](https://github.com/certd/certd/commit/59ba4080706548828ef1c0a9cd893c1c9a7d591f))
+* 流水线支持有效期设置 ([911e69e](https://github.com/certd/certd/commit/911e69e3bc0cdd48b62953b5d0981d640fc1f8ac))
+* 站点证书监控增加导出和分组功能 ([2ed12c4](https://github.com/certd/certd/commit/2ed12c429eb58274a4f9dd0ed3b66e160d283ded))
+* 证书监控增加批量删除 ([e578c52](https://github.com/certd/certd/commit/e578c52fdf2f838038062aa4209b655fbae461fb))
+
+## [1.37.2](https://github.com/certd/certd/compare/v1.37.1...v1.37.2) (2025-10-14)
+
+### Performance Improvements
+
+* 证书监控支持设置证书即将过期天数 ([cd35568](https://github.com/certd/certd/commit/cd35568e042e6ab928685efad51cdbed823d2d4f))
+* 支持网络测试 ([2bef608](https://github.com/certd/certd/commit/2bef608e07ceb56d52007f290667e0afef401b22))
+
+## [1.37.1](https://github.com/certd/certd/compare/v1.37.0...v1.37.1) (2025-09-29)
+
+### Bug Fixes
+
+* 修复版本比较bug ([109696e](https://github.com/certd/certd/commit/109696e965d68c50c8627ffd40203edd1d2daea5))
+
+# [1.37.0](https://github.com/certd/certd/compare/v1.36.25...v1.37.0) (2025-09-28)
+
+**Note:** Version bump only for package @certd/ui-client
+
+## [1.36.25](https://github.com/certd/certd/compare/v1.36.24...v1.36.25) (2025-09-27)
+
+**Note:** Version bump only for package @certd/ui-client
+
+## [1.36.24](https://github.com/certd/certd/compare/v1.36.23...v1.36.24) (2025-09-27)
+
+**Note:** Version bump only for package @certd/ui-client
+
+## [1.36.23](https://github.com/certd/certd/compare/v1.36.22...v1.36.23) (2025-09-26)
+
+### Bug Fixes
+
+* 授权页面，id列位置不在第一列的bug ([3f1722d](https://github.com/certd/certd/commit/3f1722d54debcb4849dc14521a2da0d9b304b69f))
+
+### Performance Improvements
+
+* 动态加载验证码script ([dcc396a](https://github.com/certd/certd/commit/dcc396afb7a23aeb8af57c01014b09af5f033e61))
+* 验证码支持测试，登录验证码需要测试通过后才能开启 ([83e6476](https://github.com/certd/certd/commit/83e6476408090b741fabb1b542fb458d9a8b4134))
+
+## [1.36.22](https://github.com/certd/certd/compare/v1.36.21...v1.36.22) (2025-09-23)
+
+### Bug Fixes
+
+* 选择授权对话框编辑时，名称字段排在最后的bug ([31cfb09](https://github.com/certd/certd/commit/31cfb09468bda3272f5f63af65ff3e9272220b39))
+
+### Performance Improvements
+
+* 登录失败时清除验证码状态 ([1c15bea](https://github.com/certd/certd/commit/1c15beadc7fe8a7c6ec1903b7e722ca2f52e05b3))
+
+## [1.36.21](https://github.com/certd/certd/compare/v1.36.20...v1.36.21) (2025-09-15)
+
+### Bug Fixes
+
+* 修复导入插件对话框无法打开的bug，修复插件编辑页面打开多个代码编辑器消失的bug ([e5a080a](https://github.com/certd/certd/commit/e5a080aebe0d2f3e3c0f86bf863f75069c1bf7ab))
+
+## [1.36.20](https://github.com/certd/certd/compare/v1.36.19...v1.36.20) (2025-09-13)
+
+### Bug Fixes
+
+* 修复商业版退出登录后，丢失站点个性化设置的bug ([d75dd05](https://github.com/certd/certd/commit/d75dd058d65c85f80c49e1fa7a910e6c6f08e824))
+* 修复授权类型和名称字段排到最后的bug ([43b7977](https://github.com/certd/certd/commit/43b79778ea9034065f6a15af3296274315597c6b))
+
+### Performance Improvements
+
+* 登录支持极验验证码 ([370db62](https://github.com/certd/certd/commit/370db62bf0aece241859244927beabba32d6a257))
+* 登录注册、找回密码都支持极验验证码和图片验证码 ([7bdde68](https://github.com/certd/certd/commit/7bdde68ecea29fe2c570fd3cb082139db6c93d93))
+* 优化加量包展示效果 ([3c65f37](https://github.com/certd/certd/commit/3c65f37d84177ba107d4a6462648af12d2fc4b7a))
+* 证书到期剩余天数进度条根据实际证书有效期计算 ([#528](https://github.com/certd/certd/issues/528)) nicheng-he ([2d4586b](https://github.com/certd/certd/commit/2d4586b1c42c39f97d2a95b9453cca4bc8bfbe61))
+
+## [1.36.19](https://github.com/certd/certd/compare/v1.36.18...v1.36.19) (2025-09-05)
+
+### Bug Fixes
+
+* 修复批量流水线执行时日志显示错乱的问题 ([4372adc](https://github.com/certd/certd/commit/4372adc703b9a4c785664054ab2a533626d815a8))
+* 修复远程数据选择无法过滤的bug ([6cbb073](https://github.com/certd/certd/commit/6cbb0739f8428d51b0712f718fe4d236cc087cf9))
+* 修复mysql下购买套餐加量包无效的bug ([c26ad4c](https://github.com/certd/certd/commit/c26ad4c8075f0606d45b8da13915737968d6191a))
+
+### Performance Improvements
+
+* 创建证书时支持选择通知时机 ([0e96bfd](https://github.com/certd/certd/commit/0e96bfdfa377824d204e72923d1176408ae6b300))
+* 商业版隐藏文档相关链接 ([4443a1c](https://github.com/certd/certd/commit/4443a1c0308fa6b95a05efd73d15d24b65d641c9))
+* 商业版隐藏文档相关链接 ([db89561](https://github.com/certd/certd/commit/db8956148083bc4f988226ccf719940d08158a27))
+* 支持根据id更新证书（证书Id不变接口），不过该接口为白名单功能，普通腾讯云账户无法使用 ([fe9c4f3](https://github.com/certd/certd/commit/fe9c4f3391ff07c01dd9a252225f69a129c39050))
+* 子域名托管说明 ([39a0223](https://github.com/certd/certd/commit/39a02235cf4416bb5bd1acd3831241efeaa2f602))
+
+## [1.36.18](https://github.com/certd/certd/compare/v1.36.17...v1.36.18) (2025-08-28)
+
+### Bug Fixes
+
+* 修复cron选择组件星期显示错误的bug ([eb75e52](https://github.com/certd/certd/commit/eb75e52278f94a72643f7317e6740fb42666c68a))
+
+### Performance Improvements
+
+* 短信验证码支持腾讯云 ([9108459](https://github.com/certd/certd/commit/9108459ae42bcd95a59acba164a64e82e5f2cfe6))
+* 商业版支持自定义插件的参数配置 ([17f23f3](https://github.com/certd/certd/commit/17f23f37516af925d5049291d67d41e4271f81f8))
+* 支持p7b证书格式 ([d9f4a57](https://github.com/certd/certd/commit/d9f4a5793d68a017a5d80ad5385cbda603c4e165))
+* openapi返回证书时挑选匹配范围最小的那一个；增加format参数，增加返回值p7b格式，增加detail返回 ([2085bcc](https://github.com/certd/certd/commit/2085bcceb61c3723c9bdfec4c4cc0917631ff5e5))
+
 ## [1.36.17](https://github.com/certd/certd/compare/v1.36.16...v1.36.17) (2025-08-17)
 
 **Note:** Version bump only for package @certd/ui-client

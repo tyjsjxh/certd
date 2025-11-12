@@ -48,8 +48,9 @@ export type CertInfo = {
   der?: string;
   jks?: string;
   one?: string;
+  p7b?: string;
 };
-export type SSLProvider = "letsencrypt" | "google" | "zerossl";
+export type SSLProvider = "letsencrypt" | "google" | "zerossl" | "sslcom" | "letsencrypt_staging";
 export type PrivateKeyType = "rsa_1024" | "rsa_2048" | "rsa_3072" | "rsa_4096" | "ec_256" | "ec_384" | "ec_521";
 type AcmeServiceOptions = {
   userContext: IContext;
@@ -81,9 +82,9 @@ export class AcmeService {
     this.sslProvider = options.sslProvider || "letsencrypt";
     this.eab = options.eab;
     this.skipLocalVerify = options.skipLocalVerify ?? false;
-    acme.setLogger((message: any, ...args: any[]) => {
-      this.logger.info(message, ...args);
-    });
+    // acme.setLogger((message: any, ...args: any[]) => {
+    //   this.logger.info(message, ...args);
+    // });
   }
 
   async getAccountConfig(email: string, urlMapping: UrlMapping): Promise<any> {
@@ -110,7 +111,7 @@ export class AcmeService {
     await this.userContext.setObj(this.buildAccountKey(email), conf);
   }
 
-  async getAcmeClient(email: string, isTest = false): Promise<acme.Client> {
+  async getAcmeClient(email: string): Promise<acme.Client> {
     const mappings = {};
     if (this.sslProvider === "letsencrypt") {
       mappings["acme-v02.api.letsencrypt.org"] = this.options.reverseProxy || "le.px.certd.handfree.work";
@@ -127,12 +128,7 @@ export class AcmeService {
       await this.saveAccountConfig(email, conf);
       this.logger.info(`创建新的Accountkey:${email}`);
     }
-    let directoryUrl = "";
-    if (isTest) {
-      directoryUrl = acme.directory[this.sslProvider].staging;
-    } else {
-      directoryUrl = acme.directory[this.sslProvider].production;
-    }
+    const directoryUrl = acme.directory[this.sslProvider].production;
     if (this.options.useMappingProxy) {
       urlMapping.enabled = true;
     } else {
@@ -154,6 +150,7 @@ export class AcmeService {
       backoffMax: 10000,
       urlMapping,
       signal: this.options.signal,
+      logger: this.logger,
     });
 
     if (conf.accountUrl == null) {
@@ -325,12 +322,12 @@ export class AcmeService {
     domainsVerifyPlan?: DomainsVerifyPlan;
     httpUploader?: any;
     csrInfo: any;
-    isTest?: boolean;
     privateKeyType?: string;
     profile?: string;
+    preferredChain?: string;
   }): Promise<CertInfo> {
-    const { email, isTest, csrInfo, dnsProvider, domainsVerifyPlan, profile } = options;
-    const client: acme.Client = await this.getAcmeClient(email, isTest);
+    const { email, csrInfo, dnsProvider, domainsVerifyPlan, profile, preferredChain } = options;
+    const client: acme.Client = await this.getAcmeClient(email);
 
     let domains = options.domains;
     const encodingDomains = [];
@@ -372,6 +369,7 @@ export class AcmeService {
         commonName,
         ...csrInfo,
         altNames,
+        // emailAddress: email,
       },
       privateKey
     );
@@ -402,6 +400,7 @@ export class AcmeService {
       },
       signal: this.options.signal,
       profile,
+      preferredChain,
     });
 
     const crtString = crt.toString();

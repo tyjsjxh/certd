@@ -46,6 +46,19 @@ export type SysPublicSetting = {
   aiChatEnabled?: boolean;
 
   showRunStrategy?: boolean;
+
+  captchaEnabled?: boolean;
+  captchaType?: number;
+  captchaAddonId?: number;
+
+  //流水线是否启用有效期
+  pipelineValidTimeEnabled?: boolean;
+
+  //证书域名添加到监控
+  certDomainAddToMonitorEnabled?: boolean;
+
+  // 固定证书有效期天数，0表示不固定
+  fixedCertExpireDays?: number;
 };
 export type SuiteSetting = {
   enabled?: boolean;
@@ -59,6 +72,9 @@ export type SysPrivateSetting = {
     type?: string;
     config?: any;
   };
+
+  //http请求超时时间
+  httpRequestTimeout?: number;
 };
 export type SysInstallInfo = {
   siteId: string;

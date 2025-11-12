@@ -20,6 +20,10 @@
                 </template>
               </a-input-password>
             </a-form-item>
+
+            <a-form-item v-if="settingStore.sysPublic.captchaEnabled" has-feedback required name="captcha" :rules="rules.captcha">
+              <CaptchaInput v-model:model-value="formState.captcha"></CaptchaInput>
+            </a-form-item>
           </template>
         </a-tab-pane>
         <a-tab-pane v-if="sysPublicSettings.smsLoginEnabled === true" key="sms" :tab="t('authentication.smsTab')">
@@ -32,18 +36,18 @@
               </a-input>
             </a-form-item>
 
-            <a-form-item has-feedback name="imgCode">
-              <image-code v-model:value="formState.imgCode" v-model:random-str="formState.randomStr"></image-code>
+            <a-form-item has-feedback name="smsCaptcha">
+              <CaptchaInput v-model:model-value="formState.smsCaptcha"></CaptchaInput>
             </a-form-item>
 
             <a-form-item name="smsCode" :rules="rules.smsCode">
-              <sms-code v-model:value="formState.smsCode" :img-code="formState.imgCode" :mobile="formState.mobile" :phone-code="formState.phoneCode" :random-str="formState.randomStr" />
+              <sms-code v-model:value="formState.smsCode" :captcha="formState.smsCaptcha" :mobile="formState.mobile" :phone-code="formState.phoneCode" @error="formState.smsCaptcha = null" />
             </a-form-item>
           </template>
         </a-tab-pane>
       </a-tabs>
       <a-form-item>
-        <a-button type="primary" size="large" html-type="submit" :loading="loading" class="login-button">
+        <a-button type="primary" size="large" html-type="button" :loading="loading" class="login-button" @click="handleFinish">
           {{ t("authentication.loginButton") }}
         </a-button>
 
@@ -87,16 +91,18 @@ import { defineComponent, nextTick, reactive, ref, toRaw } from "vue";
 import { useUserStore } from "/src/store/user";
 import { useSettingStore } from "/@/store/settings";
 import { utils } from "@fast-crud/fast-crud";
-import ImageCode from "/@/views/framework/login/image-code.vue";
 import SmsCode from "/@/views/framework/login/sms-code.vue";
 import { useI18n } from "/@/locales";
 import { LanguageToggle } from "/@/vben/layouts";
-
+import CaptchaInput from "/@/components/captcha/captcha-input.vue";
+import { useRoute } from "vue-router";
 export default defineComponent({
   name: "LoginPage",
-  components: { LanguageToggle, SmsCode, ImageCode },
+  components: { LanguageToggle, SmsCode, CaptchaInput },
   setup() {
     const { t } = useI18n();
+    const route = useRoute();
+    const urlLoginType = route.query.loginType as string | undefined;
     const verifyCodeInputRef = ref();
     const loading = ref(false);
     const userStore = useUserStore();
@@ -107,10 +113,10 @@ export default defineComponent({
       phoneCode: "86",
       mobile: "",
       password: "",
-      loginType: "password", //password
-      imgCode: "",
+      loginType: urlLoginType || "password", //password
       smsCode: "",
-      randomStr: "",
+      captcha: null,
+      smsCaptcha: null,
     });
 
     const rules = {
@@ -138,6 +144,12 @@ export default defineComponent({
           message: "请输入短信验证码",
         },
       ],
+      captcha: [
+        {
+          required: true,
+          message: "请进行验证码验证",
+        },
+      ],
     };
     const layout = {
       labelCol: {
@@ -160,6 +172,10 @@ export default defineComponent({
     const handleFinish = async (values: any) => {
       loading.value = true;
       try {
+        // formState.captcha = await doCaptchaValidate();
+        // if (!formState.captcha) {
+        //   return;
+        // }
         const loginType = formState.loginType;
         await userStore.login(loginType, toRaw(formState));
       } catch (e: any) {
@@ -175,6 +191,7 @@ export default defineComponent({
         }
       } finally {
         loading.value = false;
+        formState.captcha = null;
       }
     };
 
@@ -194,6 +211,9 @@ export default defineComponent({
       return sysPublicSettings.registerEnabled && (sysPublicSettings.usernameRegisterEnabled || sysPublicSettings.emailRegisterEnabled);
     }
 
+    const captchaInputRef = ref();
+    const captchaInputForSmsCode = ref();
+
     return {
       t,
       loading,
@@ -211,13 +231,14 @@ export default defineComponent({
       handleTwoFactorSubmit,
       verifyCodeInputRef,
       settingStore,
+      captchaInputRef,
+      captchaInputForSmsCode,
     };
   },
 });
 </script>
 
 <style lang="less">
-
 .login-page.main {
   //margin: 20px !important;
   margin-bottom: 100px;

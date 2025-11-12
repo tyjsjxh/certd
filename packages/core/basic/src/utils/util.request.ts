@@ -1,6 +1,5 @@
 import axios, { AxiosHeaders, AxiosRequestConfig } from "axios";
 import { ILogger, logger } from "./util.log.js";
-import { Logger } from "log4js";
 import { HttpProxyAgent } from "http-proxy-agent";
 import { HttpsProxyAgent } from "https-proxy-agent";
 import nodeHttp from "http";
@@ -8,6 +7,13 @@ import * as https from "node:https";
 import { merge } from "lodash-es";
 import { safePromise } from "./util.promise.js";
 import fs from "fs";
+
+const errorMap: Record<string, string> = {
+  "ssl3_get_record:wrong version number": "http协议错误，服务端要求http协议，请检查是否使用了https请求",
+  "getaddrinfo EAI_AGAIN": "无法解析域名，请检查网络连接或dns配置，更换docker-compose.yaml中dns配置",
+  "self-signed certificate": "目标站点为自签名证书，请勾选忽略证书校验",
+};
+
 export class HttpError extends Error {
   status?: number;
   statusText?: string;
@@ -22,11 +28,12 @@ export class HttpError extends Error {
     super(error.message || error.response?.statusText);
 
     const message = error?.message;
-    if (message && typeof message === "string") {
-      if (message.indexOf && message.indexOf("ssl3_get_record:wrong version number") >= 0) {
-        this.message = `${message}(http协议错误，服务端要求http协议，请检查是否使用了https请求)`;
-      } else if (message.indexOf("getaddrinfo EAI_AGAIN") >= 0) {
-        this.message = `${message}(无法解析域名，请检查网络连接或dns配置，更换docker-compose.yaml中dns配置)`;
+    if (message && typeof message === "string" && message.indexOf) {
+      for (const key in errorMap) {
+        if (message.indexOf(key) > -1) {
+          this.message = `${this.message}(${errorMap[key]})`;
+          break;
+        }
       }
     }
 
@@ -84,7 +91,7 @@ export function getGlobalAgents() {
 /**
  * @description 创建请求实例
  */
-export function createAxiosService({ logger }: { logger: Logger }) {
+export function createAxiosService({ logger }: { logger: ILogger }) {
   // 创建一个 axios 实例
   const service = axios.create();
 
@@ -200,10 +207,31 @@ export function createAxiosService({ logger }: { logger: Logger }) {
         case 505:
           error.message = "HTTP版本不受支持";
           break;
+        case 302:
+          //重定向
+          return Promise.resolve(error.response);
         default:
           break;
       }
-      logger.error(`请求出错：status:${error.response?.status},statusText:${error.response?.statusText},url:${error.config?.url},method:${error.config?.method}。`);
+
+      const errorCode = error.code;
+      let errorMessage = null;
+      if (errorCode === "ECONNABORTED") {
+        errorMessage = "请求连接终止";
+      } else if (errorCode === "ETIMEDOUT") {
+        errorMessage = "请求连接超时";
+      } else if (errorCode === "ECONNRESET") {
+        errorMessage = "请求连接被重置";
+      } else if (errorCode === "ECONNREFUSED") {
+        errorMessage = "请求连接被服务端拒绝";
+      } else if (errorCode === "ENOTFOUND") {
+        errorMessage = "请求地址不存在";
+      }
+      if (errorMessage) {
+        error.message = errorMessage + "," + error.message;
+      }
+
+      logger.error(`请求出错：status:${error.response?.status || error.code},statusText:${error.response?.statusText || error.code},url:${error.config?.url},method:${error.config?.method}。`);
       logger.error("返回数据:", JSON.stringify(error.response?.data));
       if (error.response?.data) {
         const message = error.response.data.message || error.response.data.msg || error.response.data.error;

@@ -24,7 +24,7 @@
             </a-col>
           </a-row>
         </template>
-        <div class="flex-col h-100 w-100 overflow-hidden">
+        <div class="flex-col h-100 overflow-hidden md:ml-5 md:mr-5 step-form-body">
           <a-tabs v-model:active-key="pluginGroupActive" tab-position="left" class="flex-1 overflow-hidden">
             <template v-for="group of computedPluginGroups" :key="group.key">
               <a-tab-pane v-if="(group.key === 'admin' && userStore.isAdmin) || group.key !== 'admin'" :key="group.key" class="scroll-y">
@@ -313,6 +313,8 @@ function useStepForm() {
   };
 
   const stepDelete = () => {
+    //检查输出依赖
+
     Modal.confirm({
       title: "确认",
       content: `确定要删除此步骤吗？`,
@@ -462,12 +464,9 @@ defineExpose({
 .step-form-drawer {
   max-width: 100%;
 
-  .ant-tabs-right > div > .ant-tabs-nav .ant-tabs-tab {
-    padding: 8px 10px;
-  }
-
   .ant-tabs-nav .ant-tabs-tab {
     margin-top: 10px !important;
+    padding: 8px 14px !important;
   }
 
   &.fullscreen {

@@ -188,6 +188,11 @@ export class AsyncSsh2Client {
     //   script += "\r\nexit\r\n";
     //   //保证windows下正常退出
     // }
+
+    if (script.includes(" -i ")) {
+      this.logger.warn("不支持交互式命令，请不要使用-i参数");
+    }
+
     return safePromise((resolve, reject) => {
       this.logger.info(`执行命令：[${this.connConf.host}][exec]: \n` + script);
       // pty 伪终端，window下的输出会带上conhost.exe之类的多余的字符串，影响返回结果判断
@@ -247,6 +252,9 @@ export class AsyncSsh2Client {
             const err = this.convert(iconv, ret);
             stdErr += err;
             hasErrorLog = true;
+            if (err.includes("sudo: a password is required")) {
+              this.logger.warn("请配置sudo免密，否则命令无法执行");
+            }
             this.logger.error(`[${this.connConf.host}][error]: ` + err.trimEnd());
           });
       });
@@ -466,7 +474,8 @@ export class SshClient {
 
   async isCmd(conn: AsyncSsh2Client) {
     const spec = await conn.exec("echo %COMSPEC% ");
-    if (spec.toString().trim() === "%COMSPEC%") {
+    const ret = spec.toString().trim();
+    if (ret.includes("%COMSPEC%") && !ret.includes("echo %COMSPEC%")) {
       return false;
     } else {
       return true;
@@ -539,8 +548,16 @@ export class SshClient {
           }
         }
 
-        if (isLinux && options.stopOnError !== false) {
-          script = "set -e\n" + script;
+        if (isLinux) {
+          if (options.connectConf.scriptType == "bash") {
+            script = "#!/usr/bin/env bash \n" + script;
+          } else if (options.connectConf.scriptType == "sh") {
+            script = "#!/bin/sh\n" + script;
+          }
+
+          if (options.connectConf.scriptType != "fish" && options.stopOnError !== false) {
+            script = "set -e\n" + script;
+          }
         }
 
         return await conn.exec(script as string, { throwOnStdErr });
@@ -584,10 +601,15 @@ export class SshClient {
       }
       throw e;
     }
-
+    let timeoutId = null;
     try {
+      timeoutId = setTimeout(() => {
+        this.logger.info("执行超时，断开连接");
+        conn.end();
+      }, 1000 * (connectConf.timeout || 1800));
       return await callable(conn);
     } finally {
+      clearTimeout(timeoutId);
       conn.end();
     }
   }

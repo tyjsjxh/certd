@@ -11,7 +11,7 @@
       @finish="handleFinish"
       @finish-failed="handleFinishFailed"
     >
-      <a-tabs v-model:active-key="forgotPasswordType" :destroyInactiveTabPane="true">
+      <a-tabs v-model:active-key="forgotPasswordType" :destroy-inactive-tab-pane="true">
         <a-tab-pane key="email" tab="邮箱找回">
           <a-form-item has-feedback name="input" label="邮箱">
             <a-input v-model:value="formState.input" placeholder="邮箱" size="large" autocomplete="off">
@@ -20,13 +20,17 @@
               </template>
             </a-input>
           </a-form-item>
+          <a-form-item has-feedback name="captchaForEmail" label="验证码">
+            <CaptchaInput ref="captchaForEmailRef" v-model:model-value="formState.captchaForEmail"></CaptchaInput>
+          </a-form-item>
           <a-form-item has-feedback name="validateCode" label="邮件验证码">
             <email-code
               v-model:value="formState.validateCode"
-              :img-code="formState.imgCode"
+              :captcha="formState.captchaForEmail"
               :email="formState.input"
               :random-str="formState.randomStr"
               verification-type="forgotPassword"
+              @error="formState.captchaForEmail = null"
             />
           </a-form-item>
         </a-tab-pane>
@@ -38,22 +42,21 @@
               </template>
             </a-input>
           </a-form-item>
+          <a-form-item has-feedback name="captchaForSms" label="验证码">
+            <CaptchaInput ref="captchaForSmsRef" v-model:model-value="formState.captchaForSms"></CaptchaInput>
+          </a-form-item>
           <a-form-item name="validateCode" label="手机验证码">
             <sms-code
               v-model:value="formState.validateCode"
-              :img-code="formState.imgCode"
+              :captcha="formState.captchaForSms"
               :mobile="formState.input"
               :phone-code="formState.phoneCode"
-              :random-str="formState.randomStr"
               verification-type="forgotPassword"
+              @error="formState.captchaForSms = null"
             />
           </a-form-item>
         </a-tab-pane>
       </a-tabs>
-
-      <a-form-item has-feedback name="imgCode" label="图片验证码">
-        <image-code ref="imageCodeRef" v-model:value="formState.imgCode" v-model:random-str="formState.randomStr"></image-code>
-      </a-form-item>
 
       <a-form-item has-feedback name="password" label="新密码">
         <a-input-password v-model:value="formState.password" placeholder="新密码" size="large" autocomplete="off">
@@ -72,8 +75,10 @@
       <a-form-item>
         <a-button type="primary" size="large" html-type="submit" class="submit-button"> 找回密码</a-button>
 
-        <div class="mt-2">
-          <a href="https://certd.docmirror.cn/guide/use/forgotpasswd/" target="_blank"> 管理员无绑定通信方式或MFA丢失找回 </a>
+        <div class="mt-2 flex-between">
+          <a v-comm="false" href="https://certd.docmirror.cn/guide/use/forgotpasswd/" target="_blank"> 管理员无绑定通信方式或MFA丢失找回 </a>
+
+          <router-link :to="{ name: 'login' }"> 返回登录 </router-link>
         </div>
       </a-form-item>
     </a-form>
@@ -82,12 +87,12 @@
 
 <script setup lang="ts">
 import { onMounted, reactive, ref, toRaw, watch } from "vue";
-import ImageCode from "/@/views/framework/login/image-code.vue";
 import EmailCode from "/@/views/framework/register/email-code.vue";
 import SmsCode from "/@/views/framework/login/sms-code.vue";
 import { utils } from "@fast-crud/fast-crud";
 import { useUserStore } from "/@/store/user";
-
+import { useSettingStore } from "/@/store/settings";
+import CaptchaInput from "/@/components/captcha/captcha-input.vue";
 defineOptions({
   name: "ForgotPasswordPage",
 });
@@ -95,7 +100,8 @@ defineOptions({
 const rules = {
   input: [{ required: true }],
   validateCode: [{ required: true }],
-  imgCode: [{ required: true }, { min: 4, max: 4, message: "请输入4位图片验证码" }],
+  captchaForEmail: [{ required: true }],
+  captchaForSms: [{ required: true }],
   password: [
     { required: true, trigger: "change", message: "请输入密码" },
     { min: 6, message: "至少输入6位密码" },
@@ -123,16 +129,15 @@ const layout = {
 
 const forgotPasswordType = ref();
 const userStore = useUserStore();
+const settingStore = useSettingStore();
 const formRef = ref();
-const imageCodeRef = ref();
 
 const formState: any = reactive({
   input: "",
-  randomStr: "",
-  imgCode: "",
+  captchaForSms: null,
+  captchaForEmail: null,
   phoneCode: "86",
   validateCode: "",
-
   password: "",
   confirmPassword: "",
 });
@@ -146,7 +151,6 @@ onMounted(() => {
 watch(forgotPasswordType, () => {
   formState.input = "";
   formState.validateCode = "";
-  imageCodeRef.value.resetImageCode();
   formRef.value.clearValidate(Object.keys(formState).filter(key => !["password", "confirmPassword"].includes(key)));
 });
 
@@ -155,8 +159,6 @@ const handleFinish = async (values: any) => {
     toRaw({
       type: forgotPasswordType.value,
       input: formState.input,
-      randomStr: formState.randomStr,
-      imgCode: formState.imgCode,
       validateCode: formState.validateCode,
       password: formState.password,
       confirmPassword: formState.confirmPassword,

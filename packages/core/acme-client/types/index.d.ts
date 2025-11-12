@@ -49,6 +49,7 @@ export interface ClientOptions {
     backoffMax?: number;
     urlMapping?: UrlMapping;
     signal?: AbortSignal;
+    logger?:any
 }
 
 export interface ClientExternalAccountBindingOptions {
@@ -105,6 +106,9 @@ export const directory: {
     },
     letsencrypt: {
         staging: string,
+        production: string
+    },
+    letsencrypt_staging: {
         production: string
     },
     zerossl: {

@@ -28,7 +28,7 @@ export abstract class CertApplyBaseConvertPlugin extends AbstractTaskPlugin {
       "2、子域名被通配符包含的不要填写，例如：www.foo.com已经被*.foo.com包含，不要填写www.foo.com\n" +
       "3、泛域名只能通配*号那一级（*.foo.com的证书不能用于xxx.yyy.foo.com、不能用于foo.com）\n" +
       "4、输入一个，空格之后，再输入下一个 \n" +
-      "5、如果您配置了子域托管解析，请先[设置托管子域名](#/certd/pipeline/subDomain)",
+      "5、如果设置了子域托管解析（比如免费的二级域名托管在CF或者阿里云），请先[设置托管子域名](#/certd/pipeline/subDomain)",
   })
   domains!: string[];
 
@@ -99,6 +99,7 @@ export abstract class CertApplyBaseConvertPlugin extends AbstractTaskPlugin {
     const cert: CertInfo = certReader.toCertInfo();
     this.cert = cert;
 
+    this._result.pipelineVars.certEffectiveTime = dayjs(certReader.detail.notBefore).valueOf();
     this._result.pipelineVars.certExpiresTime = dayjs(certReader.detail.notAfter).valueOf();
     if (!this._result.pipelinePrivateVars) {
       this._result.pipelinePrivateVars = {};
@@ -123,6 +124,10 @@ export abstract class CertApplyBaseConvertPlugin extends AbstractTaskPlugin {
 
         if (cert.jks == null && res.jks) {
           cert.jks = res.jks;
+        }
+
+        if (cert.p7b == null && res.p7b) {
+          cert.p7b = res.p7b;
         }
 
         this.logger.info("转换证书格式成功");
@@ -150,6 +155,7 @@ export abstract class CertApplyBaseConvertPlugin extends AbstractTaskPlugin {
     zip.file("intermediate.crt", cert.ic);
     zip.file("origin.crt", cert.oc);
     zip.file("one.pem", cert.one);
+    zip.file("cert.p7b", cert.p7b);
     if (cert.pfx) {
       zip.file("cert.pfx", Buffer.from(cert.pfx, "base64"));
     }

@@ -68,6 +68,7 @@ export default ({ command, mode }) => {
       rollupOptions: {
         plugins: [visualizer()],
       },
+      minify: "esbuild",
     },
     css: {
       preprocessorOptions: {
@@ -83,6 +84,7 @@ export default ({ command, mode }) => {
       host: "0.0.0.0",
       port: 3008,
       fs: devServerFs,
+      allowedHosts: ["localhost", "127.0.0.1", "yfy.docmirror.cn"],
       proxy: {
         // with options
         "/api": {

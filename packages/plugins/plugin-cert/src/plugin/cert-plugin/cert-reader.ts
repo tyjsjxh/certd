@@ -17,14 +17,25 @@ export type CertReaderHandleContext = {
   tmpIcPath?: string;
   tmpJksPath?: string;
   tmpOnePath?: string;
+  tmpP7bPath?: string;
 };
 export type CertReaderHandle = (ctx: CertReaderHandleContext) => Promise<void>;
 export type HandleOpts = { logger: ILogger; handle: CertReaderHandle };
+
+const formats = {
+  pem: ["crt", "key", "ic"],
+  one: ["one"],
+  pfx: ["pfx"],
+  der: ["der"],
+  jks: ["jks"],
+  p7b: ["p7b", "key"],
+};
 export class CertReader {
   cert: CertInfo;
 
   detail: CertificateInfo;
   //毫秒时间戳
+  effective: number;
   expires: number;
   constructor(certInfo: CertInfo) {
     this.cert = certInfo;
@@ -42,8 +53,9 @@ export class CertReader {
     }
 
     try {
-      const { detail, expires } = this.getCrtDetail(this.cert.crt);
+      const { detail, effective, expires } = this.getCrtDetail(this.cert.crt);
       this.detail = detail;
+      this.effective = effective.getTime();
       this.expires = expires.getTime();
     } catch (e) {
       throw new Error("证书解析失败:" + e.message);
@@ -73,8 +85,17 @@ export class CertReader {
     return arr[0] + endStr;
   }
 
-  toCertInfo(): CertInfo {
-    return this.cert;
+  toCertInfo(format?: string): CertInfo {
+    if (!format) {
+      return this.cert;
+    }
+
+    const formatArr = formats[format];
+    const res: any = {};
+    formatArr.forEach((key: string) => {
+      res[key] = this.cert[key];
+    });
+    return res;
   }
 
   getCrtDetail(crt: string = this.cert.crt) {
@@ -83,8 +104,9 @@ export class CertReader {
 
   static readCertDetail(crt: string) {
     const detail = crypto.readCertificateInfo(crt.toString());
+    const effective = detail.notBefore;
     const expires = detail.notAfter;
-    return { detail, expires };
+    return { detail, effective, expires };
   }
 
   getAllDomains() {
@@ -124,7 +146,7 @@ export class CertReader {
     return domain;
   }
 
-  saveToFile(type: "crt" | "key" | "pfx" | "der" | "oc" | "one" | "ic" | "jks", filepath?: string) {
+  saveToFile(type: "crt" | "key" | "pfx" | "der" | "oc" | "one" | "ic" | "jks" | "p7b", filepath?: string) {
     if (!this.cert[type]) {
       return;
     }
@@ -138,7 +160,7 @@ export class CertReader {
     if (!fs.existsSync(dir)) {
       fs.mkdirSync(dir, { recursive: true });
     }
-    if (type === "crt" || type === "key" || type === "ic" || type === "oc" || type === "one") {
+    if (type === "crt" || type === "key" || type === "ic" || type === "oc" || type === "one" || type === "p7b") {
       fs.writeFileSync(filepath, this.cert[type]);
     } else {
       fs.writeFileSync(filepath, Buffer.from(this.cert[type], "base64"));
@@ -157,17 +179,19 @@ export class CertReader {
     const tmpDerPath = this.saveToFile("der");
     const tmpJksPath = this.saveToFile("jks");
     const tmpOnePath = this.saveToFile("one");
+    const tmpP7bPath = this.saveToFile("p7b");
     logger.info("本地文件写入成功");
     try {
       return await opts.handle({
         reader: this,
-        tmpCrtPath: tmpCrtPath,
-        tmpKeyPath: tmpKeyPath,
-        tmpPfxPath: tmpPfxPath,
-        tmpDerPath: tmpDerPath,
-        tmpIcPath: tmpIcPath,
-        tmpJksPath: tmpJksPath,
-        tmpOcPath: tmpOcPath,
+        tmpCrtPath,
+        tmpKeyPath,
+        tmpPfxPath,
+        tmpDerPath,
+        tmpIcPath,
+        tmpJksPath,
+        tmpOcPath,
+        tmpP7bPath,
         tmpOnePath,
       });
     } catch (err) {
@@ -189,6 +213,7 @@ export class CertReader {
       removeFile(tmpIcPath);
       removeFile(tmpJksPath);
       removeFile(tmpOnePath);
+      removeFile(tmpP7bPath);
     }
   }
 
@@ -199,10 +224,10 @@ export class CertReader {
     return `${prefix}_${domain}_${timeStr}.${suffix}`;
   }
 
-  buildCertName() {
+  buildCertName(prefix: string = "") {
     let domain = this.getMainDomain();
     domain = domain.replaceAll(".", "_").replaceAll("*", "_");
-    return `${domain}_${dayjs().format("YYYYMMDDHHmmssSSS")}`;
+    return `${prefix}_${domain}_${dayjs().format("YYYYMMDDHHmmssSSS")}`;
   }
 
   static appendTimeSuffix(name?: string) {

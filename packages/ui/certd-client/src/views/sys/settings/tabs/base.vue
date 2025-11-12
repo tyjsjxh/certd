@@ -1,6 +1,6 @@
 <template>
   <div class="sys-settings-form sys-settings-base">
-    <a-form :model="formState" name="basic" :label-col="{ span: 8 }" :wrapper-col="{ span: 16 }" autocomplete="off" @finish="onFinish" @finish-failed="onFinishFailed">
+    <a-form :model="formState" name="basic" :label-col="{ span: 8 }" :wrapper-col="{ span: 16 }" autocomplete="off" @finish="onFinish">
       <a-form-item :label="t('certd.icpRegistrationNumber')" :name="['public', 'icpNo']">
         <a-input v-model:value="formState.public.icpNo" :placeholder="t('certd.icpPlaceholder')" />
       </a-form-item>
@@ -63,7 +63,8 @@ import { useSettingStore } from "/@/store/settings";
 import { notification } from "ant-design-vue";
 import { util } from "/@/utils";
 import { useI18n } from "/src/locales";
-
+import AddonSelector from "../../../certd/addon/addon-selector/index.vue";
+import CaptchaInput from "/@/components/captcha/captcha-input.vue";
 const { t } = useI18n();
 
 defineOptions({
@@ -94,6 +95,7 @@ const settingsStore = useSettingStore();
 const onFinish = async (form: any) => {
   try {
     saveLoading.value = true;
+
     await api.SysSettingsSave(form);
     await settingsStore.loadSysSettings();
     notification.success({
@@ -103,17 +105,6 @@ const onFinish = async (form: any) => {
     saveLoading.value = false;
   }
 };
-
-const onFinishFailed = (errorInfo: any) => {
-  // console.log("Failed:", errorInfo);
-};
-
-async function stopOtherUserTimer() {
-  await api.stopOtherUserTimer();
-  notification.success({
-    message: t("certd.stopSuccess"),
-  });
-}
 
 const testProxyLoading = ref(false);
 async function testProxy() {

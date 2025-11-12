@@ -1,6 +1,5 @@
 import { defineStore } from "pinia";
 import { Modal, notification } from "ant-design-vue";
-import * as _ from "lodash-es";
 import * as basicApi from "./api.basic";
 import { AppInfo, HeaderMenus, PlusInfo, SiteEnv, SiteInfo, SuiteSetting, SysInstallInfo, SysPublicSetting } from "./api.basic";
 import { useUserStore } from "../user";
@@ -11,7 +10,10 @@ import { useTitle } from "@vueuse/core";
 import { utils } from "/@/utils";
 import { cloneDeep, merge } from "lodash-es";
 import { useI18n } from "/src/locales";
+import dayjs from "dayjs";
+import { $t } from "/src/locales";
 export interface SettingState {
+  skipReset?: boolean; // 注销登录时，不清空此store的状态
   sysPublic?: SysPublicSetting;
   installInfo?: {
     siteId: string;
@@ -64,6 +66,7 @@ const defaultSiteInfo: SiteInfo = {
 export const useSettingStore = defineStore({
   id: "app.setting",
   state: (): SettingState => ({
+    skipReset: true,
     plusInfo: {
       isPlus: false,
       vipType: "free",
@@ -124,17 +127,32 @@ export const useSettingStore = defineStore({
     getInstallInfo(): SysInstallInfo {
       return this.installInfo;
     },
+    isPerpetual(): boolean {
+      return this.plusInfo?.isPlus && this.plusInfo?.expireTime === -1;
+    },
     isPlus(): boolean {
-      return this.plusInfo?.isPlus && this.plusInfo?.expireTime > new Date().getTime();
+      return this.plusInfo?.isPlus && (this.plusInfo?.expireTime === -1 || this.plusInfo?.expireTime > new Date().getTime());
     },
     isComm(): boolean {
-      return this.plusInfo?.isComm && this.plusInfo?.expireTime > new Date().getTime();
+      return this.plusInfo?.isComm && (this.plusInfo?.expireTime === -1 || this.plusInfo?.expireTime > new Date().getTime());
     },
     isAgent(): boolean {
       return this.siteEnv?.agent?.enabled === true;
     },
     isCommOrAgent() {
       return this.isComm || this.isAgent;
+    },
+    expiresText() {
+      if (this.plusInfo?.expireTime == null) {
+        return "";
+      }
+      if (this.plusInfo?.expireTime === -1) {
+        return "永久";
+      }
+      return dayjs(this.plusInfo?.expireTime).format("YYYY-MM-DD");
+    },
+    isForever() {
+      return this.isPlus && this.plusInfo?.expireTime === -1;
     },
     vipLabel(): string {
       const { t } = useI18n();
@@ -172,19 +190,19 @@ export const useSettingStore = defineStore({
     checkPlus() {
       if (!this.isPlus) {
         notification.warn({
-          message: "此为专业版功能，请先升级到专业版",
+          message: $t("vip.needVipTip"),
         });
-        throw new Error("此为专业版功能，请升级到专业版");
+        throw new Error($t("vip.needVipTip"));
       }
     },
     async loadSysSettings() {
       const allSettings = await basicApi.loadAllSettings();
-      _.merge(this.sysPublic, allSettings.sysPublic || {});
-      _.merge(this.installInfo, allSettings.installInfo || {});
-      _.merge(this.siteEnv, allSettings.siteEnv || {});
-      _.merge(this.plusInfo, allSettings.plusInfo || {});
-      _.merge(this.headerMenus, allSettings.headerMenus || {});
-      _.merge(this.suiteSetting, allSettings.suiteSetting || {});
+      merge(this.sysPublic, allSettings.sysPublic || {});
+      merge(this.installInfo, allSettings.installInfo || {});
+      merge(this.siteEnv, allSettings.siteEnv || {});
+      merge(this.plusInfo, allSettings.plusInfo || {});
+      merge(this.headerMenus, allSettings.headerMenus || {});
+      merge(this.suiteSetting, allSettings.suiteSetting || {});
       //@ts-ignore
       this.initSiteInfo(allSettings.siteInfo || {});
       this.initAppInfo(allSettings.app || {});
@@ -204,7 +222,7 @@ export const useSettingStore = defineStore({
           siteInfo.loginLogo = `api/basic/file/download?key=${siteInfo.loginLogo}`;
         }
       }
-      this.siteInfo = _.merge({}, defaultSiteInfo, siteInfo);
+      this.siteInfo = merge({}, defaultSiteInfo, siteInfo);
 
       if (this.siteInfo.logo) {
         updatePreferences({

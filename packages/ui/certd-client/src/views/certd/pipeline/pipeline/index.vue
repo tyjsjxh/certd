@@ -28,6 +28,13 @@
               未设置触发源，不会自动执行
             </span>
           </a-tag>
+          <a-tag v-if="pipelineEntity.validTime > 0 && settingStore.sysPublic.pipelineValidTimeEnabled && settingStore.isPlus" :color="pipelineEntity.validTime > Date.now() ? 'green' : 'red'">
+            <span class="flex">
+              <fs-icon icon="ion:time-outline"></fs-icon>
+              <span v-if="pipelineEntity.validTime > Date.now()"> 有效期：<FsTimeHumanize :model-value="pipelineEntity.validTime" :options="{ units: ['d'] }" format="YYYY-MM-DD"></FsTimeHumanize> </span>
+              <span v-else> 已过期 </span>
+            </span>
+          </a-tag>
         </div>
         <div class="basis-40 flex justify-end mr-10">
           <template v-if="editMode">
@@ -279,7 +286,7 @@
   </fs-page>
 </template>
 
-<script lang="ts">
+<script lang="tsx">
 import { computed, defineComponent, onMounted, onUnmounted, provide, ref, Ref, watch } from "vue";
 import { useRouter } from "vue-router";
 import PiTaskForm from "./component/task-form/index.vue";
@@ -343,7 +350,7 @@ export default defineComponent({
     const { t } = useI18n();
     const currentPipeline: Ref<any> = ref({});
     const pipeline: Ref<any> = ref({});
-
+    const pipelineEntity: Ref<any> = ref({});
     const histories: Ref<RunHistory[]> = ref([]);
 
     const currentHistory: Ref<any> = ref({});
@@ -490,6 +497,7 @@ export default defineComponent({
           return;
         }
         const detail: PipelineDetail = await props.options.getPipelineDetail({ pipelineId: value });
+        pipelineEntity.value = detail;
         currentPipeline.value = merge(
           {
             title: "新管道流程",
@@ -731,6 +739,10 @@ export default defineComponent({
           async onOk() {
             //@ts-ignore
             await changeCurrentHistory(null);
+            if (histories.value.length > 0) {
+              pipeline.value = histories.value[0].pipeline;
+            }
+
             await props.options.doTrigger({ pipelineId: pipeline.value.id, stepId: stepId });
             notification.success({ message: "管道已经开始运行" });
           },
@@ -758,9 +770,12 @@ export default defineComponent({
 
         //检查输出的stepid是否存在
         let hasError = false;
-        let errorMessage = "";
+        let errorMessages: any = [];
+        let errorIndex = 1;
         eachSteps(pp, (step: any, task: any, stage: any) => {
-          stepIds.push(step.id);
+          if (step.disabled !== true) {
+            stepIds.push(step.id);
+          }
           if (step.input) {
             for (const key in step.input) {
               const value = step.input[key];
@@ -775,22 +790,37 @@ export default defineComponent({
               const paramName = arr[2];
               if (!stepIds.includes(stepId)) {
                 hasError = true;
-                const message = `任务${step.title}的前置输出步骤${paramName}不存在，请重新修改此任务`;
+                const message = `${step.title}的前置输出步骤${paramName}不存在或已被禁用`;
+                errorIndex++;
                 addValidateError(task.id, {
                   message,
                 });
                 addValidateError(step.id, {
                   message,
                 });
-                errorMessage += message + "；";
+                errorMessages.push(message);
               }
             }
           }
         });
 
         if (hasError) {
-          notification.error({ message: errorMessage });
-          throw new Error(errorMessage);
+          notification.error({
+            message: () => {
+              const nodes = [];
+              let i = 0;
+              for (const error of errorMessages) {
+                i++;
+                nodes.push(
+                  <div>
+                    {i}.{error}
+                  </div>
+                );
+              }
+              return nodes;
+            },
+          });
+          throw new Error(errorMessages?.join(","));
         }
       }
 
@@ -804,10 +834,6 @@ export default defineComponent({
         saveLoading.value = true;
         try {
           if (props.options.doSave) {
-            if (pipeline.value.version == null) {
-              pipeline.value.version = 0;
-            }
-            pipeline.value.version++;
             currentPipeline.value = pipeline.value;
 
             //移除空阶段
@@ -815,7 +841,11 @@ export default defineComponent({
               return item.tasks.length === 0;
             });
 
-            await props.options.doSave(pipeline.value);
+            const { version } = await props.options.doSave(pipeline.value);
+            if (version) {
+              pipeline.value.version = version;
+              currentPipeline.value.version = version;
+            }
           }
           if (offEdit) {
             toggleEditMode(false);
@@ -952,6 +982,7 @@ export default defineComponent({
       nextTriggerTimes,
       viewCert,
       downloadCert,
+      pipelineEntity,
     };
   },
 });
@@ -996,7 +1027,7 @@ export default defineComponent({
     }
 
     .layout-right {
-      width: 350px;
+      width: 354px;
       height: 100%;
     }
   }
@@ -1223,7 +1254,7 @@ export default defineComponent({
     position: relative;
 
     &.collapsed {
-      margin-right: -350px;
+      margin-right: -354px;
     }
 
     .collapse-toggle {

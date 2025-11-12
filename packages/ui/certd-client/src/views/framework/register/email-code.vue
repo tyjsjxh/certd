@@ -5,7 +5,7 @@
         <fs-icon icon="ion:mail-outline"></fs-icon>
       </template>
     </a-input>
-    <div class="input-right">
+    <div class="input-right ml-5">
       <a-button class="getCaptcha" type="primary" tabindex="-1" :disabled="smsSendBtnDisabled" @click="sendSmsCode">
         {{ smsTime <= 0 ? "发送" : smsTime + " s" }}
       </a-button>
@@ -20,11 +20,10 @@ import * as api from "/@/store/settings/api.basic";
 const props = defineProps<{
   value?: string;
   email?: string;
-  imgCode?: string;
-  randomStr?: string;
+  captcha?: any;
   verificationType?: string;
 }>();
-const emit = defineEmits(["update:value", "change"]);
+const emit = defineEmits(["update:value", "change", "error"]);
 
 function onChange(value: string) {
   emit("update:value", value);
@@ -44,18 +43,20 @@ async function sendSmsCode() {
     notification.error({ message: "请输入邮箱" });
     return;
   }
-  if (!props.imgCode) {
-    notification.error({ message: "请输入图片验证码" });
+  if (!props.captcha) {
+    notification.error({ message: "请输入验证码" });
     return;
   }
   loading.value = true;
   try {
     await api.sendEmailCode({
       email: props.email,
-      imgCode: props.imgCode,
-      randomStr: props.randomStr,
+      captcha: props.captcha,
       verificationType: props.verificationType,
     });
+  } catch (e) {
+    emit("error", e);
+    throw e;
   } finally {
     loading.value = false;
   }
